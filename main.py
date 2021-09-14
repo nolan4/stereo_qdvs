@@ -10,6 +10,7 @@ import numpy as np
 
 
 
+
 def main():
 
     mat = io.loadmat('/Users/nolanardolino/Desktop/UCSD_research/Stereo_qDVS/matlab_semidense/DVS Stereo dataset/StereoEventDataset/fan_distance1_orientation1_DAVIS.mat')
@@ -45,7 +46,7 @@ def main():
     L_ev_idxs = np.arange(len(L.timestep))
     R_ev_idxs = np.arange(len(R.timestep))
 
-    denom = 10
+    denom = 100
 
     data = []
     depth_frames = []
@@ -143,12 +144,11 @@ def main():
 
     fig = plt.figure(10)    
     line = plt.imshow([[]], extent=(0,10,0,10), cmap='viridis', clim=(0,1))
-    anim = matplotlib.animation.FuncAnimation(fig, animate, frames=num_ticks//denom, interval=60) 
+    anim = animation.FuncAnimation(fig, animate, frames=num_ticks//denom, interval=60) 
     HTML(anim.to_jshtml())   
 
     writervideo = animation.FFMpegWriter(fps=60)
-    anim.save('increasingStraightLine.mp4', writer=writervideo)
-
+    anim.save('depth_frames.mp4', writer=writervideo)
 
 if __name__ == "__main__":
     main()
