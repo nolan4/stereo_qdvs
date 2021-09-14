@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 from scipy import io
 from functions_classes import *
 
+from IPython.display import HTML
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np 
+
 
 
 def main():
@@ -40,10 +45,12 @@ def main():
     L_ev_idxs = np.arange(len(L.timestep))
     R_ev_idxs = np.arange(len(R.timestep))
 
-    data = []
+    denom = 10
 
+    data = []
+    depth_frames = []
     # iterate through each frame t
-    for i in 1+np.arange(num_ticks):
+    for i in 1+np.arange(num_ticks//denom):
 
         # allocate space for events to be drawn
         l_evs = np.zeros((dim,dim,np.shape(T_windows)[0]))
@@ -114,21 +121,33 @@ def main():
                     winner_pairs.append([l_pix, r_pix])
                 
         temp_map = np.zeros((dim,dim))
-        disparity_map, X, Y, Z = disparity(winner_pairs, l_xs, l_ys, r_xs, r_ys, temp_map)
+        depth_map, X, Y, Z = disparity(winner_pairs, l_xs, l_ys, r_xs, r_ys, temp_map)
         data.append([X,Y,Z])
+        depth_frames.append(depth_map)
         
             # every 5 ticks, do a sanity check
-        if i%5 == 0:
-            print(i, 'out of', num_ticks)
+        if i%1 == 0:
+            print(i, 'out of', num_ticks/denom)
             # plt.imshow(TSs_scaled_l)
             # plt.pause(.2)
             # plt.imshow(TSs_l[:,:,0])
             # plt.pause(.2)
-            plt.imshow(disparity_map)
-            plt.pause(.2)
+            # plt.figure(5)
+            # plt.imshow(depth_map)
+            # plt.pause(.02)
         
         
+    def animate(frame):
+        f = depth_frames[frame]
+        line.set_data(f)
 
+    fig = plt.figure(10)    
+    line = plt.imshow([[]], extent=(0,10,0,10), cmap='viridis', clim=(0,1))
+    anim = matplotlib.animation.FuncAnimation(fig, animate, frames=num_ticks//denom, interval=60) 
+    HTML(anim.to_jshtml())   
+
+    writervideo = animation.FFMpegWriter(fps=60)
+    anim.save('increasingStraightLine.mp4', writer=writervideo)
 
 
 if __name__ == "__main__":
