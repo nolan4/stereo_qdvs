@@ -9,6 +9,8 @@ import matplotlib.animation as animation
 import numpy as np 
 
 
+import time
+
 
 
 def main():
@@ -46,7 +48,7 @@ def main():
     L_ev_idxs = np.arange(len(L.timestep))
     R_ev_idxs = np.arange(len(R.timestep))
 
-    denom = 100
+    denom = 10
 
     data = []
     depth_frames = []
@@ -103,7 +105,7 @@ def main():
         TSs_scaled_r = downscale(TSs_r, kernel_size)
 
         
-        # pairwise comparison
+        # pairwise comparison (left pixels are rows, right pixels are columns)
         Dlr = dist_measure(TSs_scaled_l, TSs_scaled_r)
         
         
